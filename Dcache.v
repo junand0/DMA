@@ -145,6 +145,7 @@ module Dcache (
 			end
 		end
 	end
+
     always @(*) begin
         if(dirty && !dcache_hit && BG) begin
             dwrite_latency_cnt = 3'd3;

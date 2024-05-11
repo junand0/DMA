@@ -212,5 +212,4 @@ initial begin $dumpfile("waveforms/tb_cpu.vcd") ;$dumpvars(0, tb_cpu) ; end
 initial begin $dumpfile("waveforms/tb_cpu.vcd") ;$dumpvars(0, tb_cpu) ; end
 initial begin $dumpfile("waveforms/tb_cpu.vcd") ;$dumpvars(0, tb_cpu) ; end
 initial begin $dumpfile("waveforms/tb_cpu.vcd") ;$dumpvars(0, tb_cpu) ; end
-initial begin $dumpfile("waveforms/tb_cpu.vcd") ;$dumpvars(0, tb_cpu) ; end
 endmodule  

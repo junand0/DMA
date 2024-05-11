@@ -28,13 +28,40 @@ module DMA (
 //// create BR signal
     reg BR_reg = 0;
     assign BR = BR_reg;
-
+    // signal to notice that stolen cycle to CPU
+    reg stolen = 0;
+    reg interrupt_end;
     always @(*) begin
         if(cmd) begin
+            interrupt_end = 0;
+        end
+        if(!interrupt_end && !stolen) begin
             BR_reg = 1;
         end
-        if(offset == 2'b10 && dwrite_clk_cnt == 0) begin
+        if(!interrupt_end && offset == 2'b10 && dwrite_clk_cnt == 0) begin
             BR_reg = 0;
+            interrupt_end = 1;
+        end
+        // stolen cycle (memory bus) to CPU
+        if(dwrite_clk_cnt == 4 && !stolen && WRITE===1 && offset == 0) begin
+            BR_reg = 0;
+            stolen = 1;
+        end
+        if(dwrite_clk_cnt == 8 && !stolen && WRITE===1 && offset == 2'b01) begin
+            BR_reg = 0;
+            stolen = 1;
+        end
+    end
+
+    // attempt to steal cycle from CPU
+    always @(posedge CLK) begin
+        if(stolen && !BR) begin
+            BR_reg <= 1;
+        end
+    end
+    always @(*) begin
+        if(stolen && BG) begin
+            stolen <= 0;
         end
     end
 
@@ -45,7 +72,7 @@ module DMA (
     assign addr = BG ? `WORD_SIZE'h1f4 : `WORD_SIZE'bz;
     assign data = BG ? edata : 64'bz;
 
-    assign offset = !BG ? 2'bz 
+    assign offset = !BG ? offset 
                     : dwrite_clk_cnt == 0 ? 0
                     : dwrite_clk_cnt == 4 ? 2'b01
                     : dwrite_clk_cnt == 8 ? 2'b10

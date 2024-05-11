@@ -10,8 +10,8 @@
 `define DATA_SIZE 3
 `define DEVICE_BIT_LEN 2
 
-`define FIRE_TIME 200600
-`define INTTERRUPT_DURATION 1000
+`define FIRE_TIME 200200
+`define INTTERRUPT_DURATION 2000
 
 module external_device(
     input wire [`DEVICE_BIT_LEN - 1 :0] offset,
